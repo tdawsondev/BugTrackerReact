@@ -1,11 +1,15 @@
 import { ButtonGroup, Button, TextField, Typography } from '@mui/material';
 import { useState, useEffect } from "react"
+import { useDispatch } from 'react-redux';
+import { setProjectDefault } from '../../redux/project';
 import ProjectService from '../../Services/ProjectService';
 import Project from './Project';
 
 const ProjectSelect = ({userId, onSelect}) => {
 
     const [projects, setProjects] = useState();
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const getProjects = async () => {
@@ -16,6 +20,7 @@ const ProjectSelect = ({userId, onSelect}) => {
             }
         }
         getProjects();
+        dispatch(setProjectDefault());
     }, [])
   
     const Default =() => {

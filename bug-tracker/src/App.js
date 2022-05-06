@@ -14,6 +14,8 @@ import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate} from 're
 import Navigation from './Components/Navigation/Navigation';
 import ProjectSelect from './Components/ProjectSelect/ProjectSelect';
 import ProjectDetails from './Components/ProjectDetails/ProjectDetails';
+import { useDispatch } from 'react-redux';
+import { setUser } from './redux/userSlice';
 
 const darkTheme = createTheme({
   palette: {
@@ -42,10 +44,12 @@ function App() {
   const [currentProject, setProject] = useState({});
   
   let navigate = useNavigate();
+  let dispatch = useDispatch();
 
   const setLogin = (login) =>{
     setUsername(login.user_name);
     setUserId(login.id);
+    dispatch(setUser(login));
     navigate('/projects');
   }
 
@@ -75,6 +79,8 @@ function App() {
       var object = JSON.parse(loggedInUser);
       setUsername(object.user_name);
       setUserId(object.id);
+      dispatch(setUser(object));
+      
     }
 
   }, [])

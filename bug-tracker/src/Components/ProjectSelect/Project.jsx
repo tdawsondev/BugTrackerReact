@@ -6,11 +6,9 @@ import { setProject } from "../../redux/project";
 
 const Project = ({project}) => {
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const setProjectState = () =>{
-    dispatch(setProject(project));
     navigate("/projects/"+project.projectid);
   }
 

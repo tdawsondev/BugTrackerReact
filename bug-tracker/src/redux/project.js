@@ -11,13 +11,17 @@ export const projectSlice = createSlice({
     reducers: {
         setProject: (state, action) => {
             const newProject = action.payload;
-            state.project.name = newProject.projectname;
-            state.project.id = newProject.projectid;
+            state.project.name = newProject.name;
+            state.project.id = newProject.id;
+        },
+        setProjectDefault: (state) =>{
+            state.project.name = 'null';
+            state.project.id = '0';
         }
     }
 
 });
 
-export const { setProject } = projectSlice.actions;
+export const { setProject, setProjectDefault } = projectSlice.actions;
 
 export default projectSlice.reducer
