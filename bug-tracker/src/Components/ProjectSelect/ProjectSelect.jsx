@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import { useDispatch } from 'react-redux';
 import { setProjectDefault } from '../../redux/project';
 import ProjectService from '../../Services/ProjectService';
+import Loading from '../Loading/Loading';
 import Project from './Project';
 
 const ProjectSelect = ({userId, onSelect}) => {
@@ -16,7 +17,7 @@ const ProjectSelect = ({userId, onSelect}) => {
             if(userId){
             var projs = await ProjectService.getProjectsForUser(userId);
             setProjects(projs);
-            console.log(JSON.stringify(projs));
+            //console.log(JSON.stringify(projs));
             }
         }
         getProjects();
@@ -31,7 +32,7 @@ const ProjectSelect = ({userId, onSelect}) => {
                </div>)
         }
         else{
-            return (<></>)
+            return (<Loading>Loading</Loading>)
         }
 
     }

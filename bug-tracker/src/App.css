@@ -1,0 +1,24 @@
+.btn-icon{
+    stroke: rgb(207, 207, 207);
+    transition: 0.2s;
+}
+
+.link{
+    color: white;
+    transition: 0.2s;
+  }
+.link:hover .btn-icon,
+.link:hover{
+    stroke: #6a1b9a;
+    color: #6a1b9a;
+    cursor: pointer;
+}
+
+.navLink{
+    color: white;
+    transition: 0.2s;
+}
+.navLink:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}

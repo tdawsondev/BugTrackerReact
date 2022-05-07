@@ -5,7 +5,9 @@ export const projectSlice = createSlice({
     initialState: {
         project: {
             name: 'null',
-            id: '0'
+            id: '0',
+            description: '',
+            createdById: '0'
         }
     },
     reducers: {
@@ -13,10 +15,14 @@ export const projectSlice = createSlice({
             const newProject = action.payload;
             state.project.name = newProject.name;
             state.project.id = newProject.id;
+            state.project.description = newProject.description;
+            state.project.createdById = newProject.created_by_id;
         },
         setProjectDefault: (state) =>{
             state.project.name = 'null';
             state.project.id = '0';
+            state.project.description = '';
+            state.project.createdById = '0';
         }
     }
 

@@ -9,6 +9,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { Drawer, Divider } from '@mui/material';
 import { useTheme } from '@emotion/react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
 
 const drawerWidth = 240;
 const Navigation = ({onLogout, children}) => {
@@ -16,6 +17,7 @@ const Navigation = ({onLogout, children}) => {
 
     const { project } = useSelector((state) => state.project); //gets project from store
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
 
 
@@ -23,11 +25,11 @@ const Navigation = ({onLogout, children}) => {
     <div>
         <div style={{display: 'flex'}}>
           <AppBar color="secondary" enableColorOnDark style={{width: `calc(100% - ${drawerWidth}px`}}>
-            <Toolbar style={{}}>
-              <Typography variant="h6" component="div" sx={{  flexGrow: 1 }}>
-                Navbar
-              </Typography>
-              <Button color='inherit' onClick={onLogout}>Logout</Button>
+            <Toolbar>
+              <div>
+                <Typography className='navLink' variant="h6" component="div" onClick={() => navigate('/projects')}>My Projects</Typography>
+              </div>
+              <Button sx={{marginLeft: 'auto'}} color='inherit' onClick={onLogout}>Logout</Button>
             </Toolbar>
           </AppBar>
           <Drawer
@@ -41,7 +43,7 @@ const Navigation = ({onLogout, children}) => {
               <div style={{margin: 'auto'}}>
                 {project.name != 'null' && 
                 <>
-                  <p style={{textAlign: 'center'}} >{project.name}</p>
+                  <p style={{textAlign: 'center'}} ></p>
                   <p style={{textAlign: 'center'}}>hi</p>
                 </>
               }

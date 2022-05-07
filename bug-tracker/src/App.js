@@ -41,7 +41,6 @@ const darkTheme = createTheme({
 function App() {
   const [username, setUsername] = useState('');
   const [userId, setUserId] = useState('');
-  const [currentProject, setProject] = useState({});
   
   let navigate = useNavigate();
   let dispatch = useDispatch();
@@ -68,11 +67,6 @@ function App() {
     return false;
   }
 
-  const setCurrentProject = (project) => {
-    setProject(project);
-  }
-
-
   useEffect(() =>{
     const loggedInUser = localStorage.getItem('user');
     if(loggedInUser){
@@ -91,7 +85,7 @@ function App() {
     <Navigation onLogout={logout}>
       <Routes>
         <Route path='/login' element={<Login onLogin={setLogin} />} />
-        <Route path='/projects' element= {<ProjectSelect onSelect={setCurrentProject} userId={userId} />} />
+        <Route path='/projects' element= {<ProjectSelect userId={userId} />} />
         <Route path='/projects/:id' element ={<ProjectDetails/>} />
         <Route path='*' element={<Navigate to='/projects'/>}/>
       </Routes>
