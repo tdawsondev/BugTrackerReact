@@ -1,6 +1,8 @@
+import baseURL from "../API";
+
 const LoginService = {
     tryLogin: async function(login) {
-        const res = await fetch('https://localhost:44318/api/Login/TryLogin', { method: 'POST',
+        const res = await fetch(baseURL + '/api/Login/TryLogin', { method: 'POST',
         headers: { 'Content-Type': 'application/json'},
         body: JSON.stringify(login)
         })

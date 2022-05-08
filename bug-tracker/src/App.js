@@ -16,6 +16,7 @@ import ProjectSelect from './Components/ProjectSelect/ProjectSelect';
 import ProjectDetails from './Components/ProjectDetails/ProjectDetails';
 import { useDispatch } from 'react-redux';
 import { setUser } from './redux/userSlice';
+import CreateProject from './Components/CreateProject/CreateProject';
 
 const darkTheme = createTheme({
   palette: {
@@ -87,6 +88,7 @@ function App() {
         <Route path='/login' element={<Login onLogin={setLogin} />} />
         <Route path='/projects' element= {<ProjectSelect userId={userId} />} />
         <Route path='/projects/:id' element ={<ProjectDetails/>} />
+        <Route path='/createproject' element ={<CreateProject/>} />
         <Route path='*' element={<Navigate to='/projects'/>}/>
       </Routes>
     </Navigation>

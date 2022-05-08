@@ -10,6 +10,7 @@ import { Drawer, Divider } from '@mui/material';
 import { useTheme } from '@emotion/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 
 const drawerWidth = 240;
 const Navigation = ({onLogout, children}) => {
@@ -27,7 +28,9 @@ const Navigation = ({onLogout, children}) => {
           <AppBar color="secondary" enableColorOnDark style={{width: `calc(100% - ${drawerWidth}px`}}>
             <Toolbar>
               <div>
-                <Typography className='navLink' variant="h6" component="div" onClick={() => navigate('/projects')}>My Projects</Typography>
+                <Link className='resetLink' to='/projects'>
+                <Typography className='navLink' variant="h6" component="div" >My Projects</Typography>
+                </Link>
               </div>
               <Button sx={{marginLeft: 'auto'}} color='inherit' onClick={onLogout}>Logout</Button>
             </Toolbar>

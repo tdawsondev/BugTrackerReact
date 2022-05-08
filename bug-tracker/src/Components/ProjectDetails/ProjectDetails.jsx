@@ -14,6 +14,8 @@ const ProjectDetails = () => {
 
     const user = useSelector((state) => state.user.user);
 
+    const [fail, setFail] = useState(false);
+
     const [project, setProjectL] = useState({});
     const [usersW, setUsersL] = useState([]);
 
@@ -37,6 +39,9 @@ const ProjectDetails = () => {
                 dispatch(setProject(proj));
 
               }
+              else{
+                setFail(true);
+              }
             }
           
           }
@@ -52,6 +57,7 @@ const ProjectDetails = () => {
 
   return (
     <>
+    {!fail ? <>
     {project.id == undefined ? <Loading>Loading</Loading>: 
     <div style={{padding: 20}}>
       <div style= {{display: 'flex'}}>
@@ -79,7 +85,7 @@ const ProjectDetails = () => {
           </CardContent>
         </Card>
       </div>
-    </div>}
+    </div>} </> : <p>Page Not Exist</p> }
     </>
   )
 }

@@ -16,9 +16,19 @@
 
 .navLink{
     color: white;
+    text-decoration: none;
     transition: 0.2s;
 }
 .navLink:hover{
     text-decoration: underline;
     cursor: pointer;
+}
+.resetLink{
+    color:  white;
+    text-decoration: none;
+}
+.boxOutline{
+    outline: solid 2px rgb(34, 34, 34);
+    padding: 20px;
+    border-radius: 6px;
 }
