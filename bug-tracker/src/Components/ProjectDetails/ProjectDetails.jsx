@@ -20,7 +20,7 @@ const ProjectDetails = () => {
     const [usersW, setUsersL] = useState([]);
 
     useEffect(() => {
-      const getProjects = async () => {
+      const getProjectDetails = async () => {
           if(id){
             var result = await ProjectService.getProjectWithUsers(id);
             if(result[0]){
@@ -38,6 +38,10 @@ const ProjectDetails = () => {
                 setUsersL(users);
                 dispatch(setProject(proj));
 
+                //get Sprints for current project
+                var res2 = await ProjectService.getSprints(proj.id);
+                console.log(JSON.stringify(res2));
+
               }
               else{
                 setFail(true);
@@ -46,7 +50,12 @@ const ProjectDetails = () => {
           
           }
       }
-      getProjects();
+
+      getProjectDetails();
+
+      return () => {
+        setUsersL([]); // This worked for me
+      };
   }, [])
 
   const saveChanges = () =>{
