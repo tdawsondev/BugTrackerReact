@@ -20,6 +20,11 @@ const ProjectService = {
         const data = await res.json()
         return data
     },
+    getSprints: async function(id) {
+        const res = await fetch(baseURL + `/api/Project/GetSprints/${id}`)
+        const data = await res.json()
+        return data
+    },
 
 };
 
