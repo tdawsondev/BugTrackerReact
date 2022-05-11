@@ -1,38 +1,46 @@
-import { Card, CardContent, Typography, Tooltip } from '@mui/material';
+import { Card, CardContent, Typography, Tooltip, Button } from '@mui/material';
 import React, { useState } from 'react'
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router";
 import { setProject } from "../../redux/project";
 import ProjectService from '../../Services/ProjectService';
+import checkIfUserOnProject from '../../Services/UtilityFunctions';
 import Loading from '../Loading/Loading';
+import PageNotFound from '../PageNotFound/PageNotFound';
 
 const ProjectDetails = () => {
 
     const { id } = useParams();
     let dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const user = useSelector((state) => state.user.user);
 
     const [fail, setFail] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const [project, setProjectL] = useState({});
     const [usersW, setUsersL] = useState([]);
+    const [sprints, setSprints] = useState([]);
+
+
+    const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi; //used to determine if id is a valid uuid
 
     useEffect(() => {
       const getProjectDetails = async () => {
+          setLoading(true);
+          if(!regexExp.test(id)){
+            setFail(true);
+            setLoading(false);
+            return;
+          }
           if(id){
             var result = await ProjectService.getProjectWithUsers(id);
-            if(result[0]){
+            if(result[0].name){ //check if result is valid
               const proj = result[0];
               const users = result[1];
-              var canBeOnProject = false;
-              for(const userL of users){
-                if(user.id == userL.uid){
-                  canBeOnProject = true
-                }
-              }
-              if(canBeOnProject){
+              if(checkIfUserOnProject(user, users)){
                 //console.log(JSON.stringify(proj))
                 setProjectL(proj);
                 setUsersL(users);
@@ -40,12 +48,20 @@ const ProjectDetails = () => {
 
                 //get Sprints for current project
                 var res2 = await ProjectService.getSprints(proj.id);
-                console.log(JSON.stringify(res2));
-
+                if(res2[0]){
+                 // console.log(JSON.stringify(res2))
+                  setSprints(res2);
+                }
+                setLoading(false);
               }
               else{
                 setFail(true);
+                setLoading(false);
               }
+            }
+            else{
+              setFail(true);
+              setLoading(false);
             }
           
           }
@@ -54,7 +70,7 @@ const ProjectDetails = () => {
       getProjectDetails();
 
       return () => {
-        setUsersL([]); // This worked for me
+        setUsersL([]); // fixes werid bug with memory leaks
       };
   }, [])
 
@@ -62,12 +78,42 @@ const ProjectDetails = () => {
     console.log("Saving")
   }
 
+  const formatedDates = (start, end) =>{
+    return formatDate(start)+ " - "+formatDate(end);
+  }
 
+  const formatDate = (date) =>{
+    var today = new Date(date);
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    today =  mm + '/' + dd + '/' +yyyy ;
+    return today;
+}
+
+/*<TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Description</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {sprints.map((val, key) => { return(
+              <TableRow>
+                <TableCell>{val.name}</TableCell>
+                <TableCell>{val.description}</TableCell>
+              </TableRow>
+            )})}
+          </TableBody>
+        </Table>
+      </TableContainer> */
 
   return (
     <>
     {!fail ? <>
-    {project.id == undefined ? <Loading>Loading</Loading>: 
+    {loading ? <Loading>Loading</Loading>: 
     <div style={{padding: 20}}>
       <div style= {{display: 'flex'}}>
       <Typography variant='h3'>{project.name}</Typography>
@@ -94,7 +140,42 @@ const ProjectDetails = () => {
           </CardContent>
         </Card>
       </div>
-    </div>} </> : <p>Page Not Exist</p> }
+      <div style= {{display: 'flex', marginTop: '20px'}}>
+        <Typography variant='h3'>Current Sprints</Typography>
+          <Tooltip title="Create New Sprint">
+            <div className='link' style={{marginLeft: 'auto', marginTop: 12}} onClick={() => navigate('/createsprint/'+project.id)}>
+              <svg className='btn-icon' xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+            </div>
+          </Tooltip>
+      </div>
+      <hr />
+      <div style={{width: '95%', margin: 'auto', mt: 3}}>
+        <div style={{display: 'flex', alignItems: 'end'}}>
+        <Typography sx={{width: '15%', color: '#a8a8a8'}}>Name</Typography>
+        <Typography sx={{width: '34%', color: '#a8a8a8'}} >Description</Typography>
+        <Typography sx={{width: '25%', color: '#a8a8a8'}} >Dates</Typography>
+        <Typography sx={{width: '25%', color: '#a8a8a8'}} >Status</Typography>
+
+        </div>
+      </div>
+      {!sprints[0] ? <Typography sx={{mt: 2, textAlign: 'center'}} variant='h5'>No sprints to display.</Typography> : <>
+      {sprints.map((val, key) => { 
+        if(val.status === 'Closed'){
+          return;
+        }
+        
+      return(
+      <Card key={key} sx={{width: '95%', margin: 'auto', mb: 3}}>
+        <CardContent sx={{display: 'flex', alignItems: 'center'}}>
+          <Typography sx={{width: '15%'}} variant='h5'>{val.name}</Typography>
+          <Typography sx={{width: '35%', color: '#a8a8a8'}} >{val.description}</Typography>
+          <Typography sx={{width: '25%', color: '#a8a8a8'}} >{formatedDates(val.start_date, val.end_date)}</Typography>
+          <Typography sx={{width: '20%', color: '#a8a8a8'}} >{val.status}</Typography>
+          <Button sx={{paddingBottom: 0}} onClick={() => navigate('/sprints/'+val.id)}>View</Button>
+        </CardContent>
+      </Card>
+      )})} </>}
+    </div>} </> : <PageNotFound/> }
     </>
   )
 }

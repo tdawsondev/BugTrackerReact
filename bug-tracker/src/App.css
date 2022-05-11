@@ -32,3 +32,15 @@
     padding: 20px;
     border-radius: 6px;
 }
+.datePicker{
+    font-size: 20px;
+    padding: 15px;
+    color:  white;
+    background-color: transparent;
+    border: solid 1px rgb(77, 77, 77);
+    border-radius: 5px;
+}
+.datePicker:hover{
+    border-color: white;
+    cursor: pointer;
+}

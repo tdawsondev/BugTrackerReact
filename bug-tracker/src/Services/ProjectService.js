@@ -25,6 +25,11 @@ const ProjectService = {
         const data = await res.json()
         return data
     },
+    getProject: async function(id){
+        const res = await fetch(baseURL + `/api/Project/Get/${id}`)
+        const data = await res.json()
+        return data
+    }
 
 };
 
