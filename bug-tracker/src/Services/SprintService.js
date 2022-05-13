@@ -7,7 +7,7 @@ const SprintService = {
         return data
     },
     getSprintByID: async function(id){
-        const res = await fetch(baseURL + `/api/Sprint/Get/${id}`)
+        const res = await fetch(baseURL + `/api/Sprint/GetWithProjectData/${id}`)
         const data = await res.json()
         return data
     },
