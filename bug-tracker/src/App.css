@@ -51,19 +51,20 @@
     margin-top: 10px;
   }
   .featureTable td{
-    border: 1px solid black;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
     padding: 10px;
     text-align: left;
     
   }
-  .featureTable tr{background-color: #494949;}
+  .featureTable tr{background-color: #2e2e2e;}
   .featureTable tr:hover {background-color: rgb(117, 117, 117);}
   .featureTable th {
     text-align: left;
     border: 1px solid black;
     padding: 5px;
     color: white;
-    background-color: #212121;
+    background-color: #1e1e1e;
   }
 
   .carretButton{

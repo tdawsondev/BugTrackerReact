@@ -1,8 +1,8 @@
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import React, { useRef, useState } from 'react'
 import { useEffect } from "react"
 import SprintService from '../../Services/SprintService';
-import { Button, Card, CardContent, Typography } from '@mui/material';
+import { Button, Card, CardContent, Tooltip, Typography } from '@mui/material';
 import Loading from '../Loading/Loading';
 import PageNotFound from '../PageNotFound/PageNotFound';
 import FeatureTableFeature from './FeatureTableFeature';
@@ -11,6 +11,7 @@ const SprintDetails = () => {
 
     const { id } = useParams();
     const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi; //used to determine if id is a valid uuid
+    const navigate = useNavigate();
 
     const [fail, setFail] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -45,7 +46,7 @@ const SprintDetails = () => {
         var res2 = await SprintService.getTree(id);
 
         if(res2[0]){
-          console.log(JSON.stringify(res2));
+          //console.log(JSON.stringify(res2));
           setTree(res2);
         }
         
@@ -102,14 +103,24 @@ const SprintDetails = () => {
             </Card>
           </div>
           <hr />
-          <div ref={featureTable} id='feature-table' style={{width: '100%', height: 'calc(100vh - 360px)' , marginTop: 20, overflowY: 'auto', padding: 0}} className='boxOutline'>
+          <div style={{display: 'flex', marginBottom: 10}}>
+            <Typography variant='h5'>Features and Tasks</Typography>
+            <Tooltip title="New Feature">
+              <div className='link' style={{marginLeft: 'auto', marginRight: 10}} onClick={() => navigate('/addfeature/'+sprint.id)}>
+                <svg className='btn-icon' xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+              </div>
+          </Tooltip>
+          </div>
+          <div ref={featureTable} id='feature-table' style={{width: '100%', height: 'calc(100vh - 400px)' , marginTop: 0, overflowY: 'auto', padding: 0}} className='boxOutline'>
             {tree[0] ? 
             <table className='featureTable' style={{ width: '100%'}}>
               <tbody>
                 <tr >
+                  <th style={{width: '60px'}}></th>
                   <th>Name</th>
                   <th>Status</th>
-                  <th>Assigned To</th> 
+                  <th>Assigned To</th>
+                  <th style={{width: '60px'}}>Remaining Time</th> 
                 </tr>
                 {tree.map((val, key) => {
                   return(
