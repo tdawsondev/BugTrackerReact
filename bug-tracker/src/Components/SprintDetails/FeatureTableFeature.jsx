@@ -1,5 +1,6 @@
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom';
 import FeatureTableTask from './FeatureTableTask';
 
 const FeatureTableFeature = ({feature}) => {
@@ -14,7 +15,9 @@ const FeatureTableFeature = ({feature}) => {
             <td style={{width: '60px'}}>{showPlus && '+'}</td>
             <td style={{ display: 'flex', border: 'none'}}>
                 {feature.Tasks[0] ? <button className='carretButton' onClick={() => setOpen(!open)}>{open ? '-': '+'}</button> :<div style={{width: '25px'}}></div> }
-                {feature.name}</td>
+                <Link className='resetLink' to={'/editfeature/'+feature.id}>
+                <Typography className='navLink'>{feature.name}</Typography>
+                </Link></td>
             <td>{feature.status}</td>
             <td>{feature.user_name}</td>
             <td style={{width: '60px'}}>{feature.remaining_time}</td>

@@ -80,3 +80,6 @@
       border: solid 1px rgb(27, 133, 255);
       cursor: pointer;
   }
+  .ql-editor{
+      min-height: 200px;
+  }

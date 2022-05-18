@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Tooltip, TextField, Button, InputLabel, Select, MenuItem, FormControl } from '@mui/material';
+import { Card, CardContent, Typography, Tooltip, TextField, Button, InputLabel, Select, MenuItem, FormControl, Alert, Snackbar } from '@mui/material';
 import React, { useState } from 'react'
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
@@ -13,8 +13,11 @@ import PageNotFound from '../PageNotFound/PageNotFound';
 import checkIfUserOnProject from '../../Services/UtilityFunctions';
 import SprintService from '../../Services/SprintService';
 import FeatureService from '../../Services/FeatureService';
+import ReactQuill from 'react-quill';
+import imageCompress from 'quill-image-compress';
+import 'react-quill/dist/quill.snow.css';
 
-const CreateFeature = () => {
+const FeatureDetails = ({data}) => {
 
     const { id } = useParams();
     const navigate = useNavigate();
@@ -27,13 +30,17 @@ const CreateFeature = () => {
     const [status, setStatus] = useState('New');
 
     const [sprint, setSprint] = useState({});
+    const [quill, setQuill] = useState({});
+
+    const [startFeature, setFeautre] = useState({});
 
 
     const [fail, setFail] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [barOpen, setBarOpen] = useState(false); 
 
     useEffect(() =>{
-        const onLoad = async() =>{
+        const onLoadCreate = async() =>{
             setLoading(true);
             if(id){
                 if(!regexExp.test(id)){
@@ -71,7 +78,41 @@ const CreateFeature = () => {
             }
             setLoading(false);
         }
-        onLoad();
+        const onLoadEdit = async() =>{
+            setLoading(true);
+            if(id){
+                if(!regexExp.test(id)){
+                    setFail(true);
+                    setLoading(false);
+                    return;
+                }
+                const res = await FeatureService.getWithParents(id);
+                if(res[0]){
+                    setFeautre(res[0]);
+                    var res2 = await ProjectService.getProjectWithUsers(res[0].projectid); // get users to check if user is allowed.
+                    if(res2[0]){
+                        const users = res2[1];
+                        if(!checkIfUserOnProject(currentUser, users)){ // check if user is allowed on project
+                            setFail(true);
+                            setLoading(true);
+                            return;
+                        }
+                    }
+                    //set data from saved stuff
+                    setSprint({name: res[0].sprint_name, id: res[0].sprint_id});
+                    setName(res[0].name);
+                    setStatus(res[0].status);
+                    setQuill(res[0].description);
+                }
+            }
+            setLoading(false);
+        }
+        if(data === 'create'){
+            onLoadCreate();
+        }
+        if(data === 'edit'){
+            onLoadEdit();
+        }
         return () => {
             setSprint({}); // fixes werid bug with memory leaks
           };
@@ -87,22 +128,52 @@ const CreateFeature = () => {
         }
 
         setLoading(true);
-        const feature = {
-            name: name,
-            description: description,
-            status: status,
-            parentSprint: sprint.id
-        }
+        if(data === "create"){
+            const feature = {
+                name: name,
+                description: quill,
+                status: status,
+                parentSprint: sprint.id
+            }
 
-        var res = FeatureService.createFeature(feature);
-        if(res){
-            setLoading(false);
-            //console.log("Success");
-            navigate('/sprints/'+sprint.id);
+            var res = await FeatureService.createFeature(feature);
+            if(res){
+                setLoading(false);
+                //console.log("Success");
+                navigate('/sprints/'+sprint.id);
+            }
+        }
+        if(data === "edit"){
+            if(!startFeature.id){
+                return;
+            }
+            const feature2 ={
+                id: startFeature.id,
+                name: name,
+                description: quill,
+                status: status,
+                parentSprint: sprint.id
+            }
+            var res2 = await FeatureService.updateFeature(feature2);
+            if(res2){
+                setLoading(false);
+                setBarOpen(true);
+
+            }
         }
 
         setLoading(false);
 
+    }
+
+    const updateQuill = (value) =>{
+        setQuill(value);
+    }
+    const handleClose = (event, reason) =>{
+        if (reason === 'clickaway') {
+            return;
+        }
+        setBarOpen(false);
     }
 
 
@@ -115,7 +186,7 @@ const CreateFeature = () => {
     <div style={{padding: 20}}>
         {loading ? <Loading></Loading>: <>
             {fail ? <PageNotFound />: <>
-            <Typography sx={{mb: 2}} variant='h4'>New Feature</Typography>
+            <Typography sx={{mb: 2}} variant='h4'>{data === 'edit' ? 'Feature Details': 'New Feature'}</Typography>
             <div className='boxOutline'>
                 <div style={{display: "flex", marginBottom: 20}}>
                     <TextField value={name} onChange={(e) => setName(e.target.value)} sx={{width: 300}} id="feature-name" label="Feature Name" variant='outlined' />
@@ -132,13 +203,17 @@ const CreateFeature = () => {
                     </Select>
                     </FormControl>
                 </div>
-                <div style={{display: "flex", marginBottom: 20}}>
-                    <TextField value={description} onChange={(e) => setDesc(e.target.value)} sx={{width: 600}} id="sprint-description" label="Description" variant='outlined' multiline rows={4} />
-                </div>
+                <Typography>Description</Typography>
+                <ReactQuill style={{marginBottom: 20}}  value={quill} onChange={updateQuill} />
+
                 <Button variant='contained' onClick={save}>Save</Button>
+                
             </div>
-            
-            
+            <Snackbar open={barOpen} autoHideDuration={6000} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}  onClose={handleClose}>
+                <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                    Saved Succesfully!
+                </Alert>
+            </Snackbar>
             
             
             </>}
@@ -147,4 +222,4 @@ const CreateFeature = () => {
   )
 }
 
-export default CreateFeature
+export default FeatureDetails

@@ -19,7 +19,7 @@ import { setUser } from './redux/userSlice';
 import CreateProject from './Components/CreateProject/CreateProject';
 import CreateSprint from './Components/CreateSprint/CreateSprint';
 import SprintDetails from './Components/SprintDetails/SprintDetails';
-import CreateFeature from './Components/CreateFeature/CreateFeature';
+import FeatureDetails from './Components/CreateFeature/CreateFeature';
 
 const darkTheme = createTheme({
   palette: {
@@ -94,7 +94,8 @@ function App() {
         <Route path='/sprints/:id' element ={<SprintDetails/>} />
         <Route path='/createproject' element ={<CreateProject/>} />
         <Route path='/createsprint/:id' element={<CreateSprint/>} />
-        <Route path='/addfeature/:id' element={<CreateFeature/>} />
+        <Route path='/addfeature/:id' element={<FeatureDetails data={'create'} />} />
+        <Route path='/editfeature/:id' element={<FeatureDetails data={'edit'}/>} />
         <Route path='*' element={<Navigate to='/projects'/>}/>
       </Routes>
     </Navigation>
