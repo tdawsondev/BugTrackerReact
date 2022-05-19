@@ -29,7 +29,12 @@ const ProjectService = {
         const res = await fetch(baseURL + `/api/Project/Get/${id}`)
         const data = await res.json()
         return data
-    }
+    },
+    getProjectNav: async function(id) {
+        const res = await fetch(baseURL + `/api/Project/GetNavToProject/${id}`)
+        const data = await res.json()
+        return data
+    },
 
 };
 

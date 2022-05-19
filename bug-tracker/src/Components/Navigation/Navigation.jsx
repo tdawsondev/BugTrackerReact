@@ -17,6 +17,7 @@ const Navigation = ({onLogout, children}) => {
     const theme = useTheme();
 
     const { project } = useSelector((state) => state.project); //gets project from store
+    const { nav } = useSelector((state) => state.nav);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -27,10 +28,28 @@ const Navigation = ({onLogout, children}) => {
         <div style={{display: 'flex'}}>
           <AppBar color="secondary" enableColorOnDark style={{width: `calc(100% - ${drawerWidth}px`}}>
             <Toolbar>
-              <div>
+              <div style={{display: 'flex'}}>
                 <Link className='resetLink' to='/projects'>
                 <Typography className='navLink' variant="h6" component="div" >My Projects</Typography>
                 </Link>
+                {nav.project_name && <>
+                  <Typography  variant="h6" sx={{ml: 1, mr: 1}}>{"->"}</Typography>
+                  <Link className='resetLink' to={'/projects/'+nav.project_id}>
+                  <Typography className='navLink' variant="h6" component="div" >{nav.project_name}</Typography>
+                  </Link>
+                </>}
+                {nav.sprint_name && <>
+                  <Typography  variant="h6" sx={{ml: 1, mr: 1}}>{"->"}</Typography>
+                  <Link className='resetLink' to={'/sprints/'+nav.sprint_id}>
+                  <Typography className='navLink' variant="h6" component="div" >{nav.sprint_name}</Typography>
+                  </Link>
+                </>}
+                {nav.feature_name && <>
+                  <Typography  variant="h6" sx={{ml: 1, mr: 1}}>{"->"}</Typography>
+                  <Link className='resetLink' to={'/editfeature/'+nav.feature_id}>
+                  <Typography className='navLink' variant="h6" component="div" >{nav.feature_name}</Typography>
+                  </Link>
+                </>}
               </div>
               <Button sx={{marginLeft: 'auto'}} color='inherit' onClick={onLogout}>Logout</Button>
             </Toolbar>

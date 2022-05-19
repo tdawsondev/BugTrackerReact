@@ -6,12 +6,15 @@ import { Button, Card, CardContent, Tooltip, Typography } from '@mui/material';
 import Loading from '../Loading/Loading';
 import PageNotFound from '../PageNotFound/PageNotFound';
 import FeatureTableFeature from './FeatureTableFeature';
+import { useDispatch } from 'react-redux';
+import { setNav } from '../../redux/navigation';
 
 const SprintDetails = () => {
 
     const { id } = useParams();
     const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi; //used to determine if id is a valid uuid
     const navigate = useNavigate();
+    let dispatch = useDispatch();
 
     const [fail, setFail] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -36,6 +39,10 @@ const SprintDetails = () => {
         if(result[0].name){
           setSprint(result[0]);
           //console.log(JSON.stringify(result)); // --- continue from here
+          var navResult = await SprintService.getSprintNav(id);
+          if(navResult){ //set Nav for page
+            dispatch(setNav(navResult[0]));
+          }
         }
         else{
           setFail(true);

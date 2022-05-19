@@ -16,11 +16,13 @@ import FeatureService from '../../Services/FeatureService';
 import ReactQuill from 'react-quill';
 import imageCompress from 'quill-image-compress';
 import 'react-quill/dist/quill.snow.css';
+import { setNav } from '../../redux/navigation';
 
 const FeatureDetails = ({data}) => {
 
     const { id } = useParams();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi; //used to determine if id is a valid uuid
 
     const currentUser = useSelector((state) => state.user.user);
@@ -61,6 +63,10 @@ const FeatureDetails = ({data}) => {
                             setLoading(false);
                             return;
                         }
+                    }
+                    let navRes = await SprintService.getSprintNav(id);
+                    if(navRes){
+                        dispatch(setNav(navRes[0]));
                     }
                     
                 }
@@ -103,6 +109,10 @@ const FeatureDetails = ({data}) => {
                     setName(res[0].name);
                     setStatus(res[0].status);
                     setQuill(res[0].description);
+                    let navRes = await FeatureService.getFeatureNav(id);
+                    if(navRes){
+                        dispatch(setNav(navRes[0]));
+                    }
                 }
             }
             setLoading(false);

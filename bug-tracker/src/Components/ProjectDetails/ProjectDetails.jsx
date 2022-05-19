@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router";
+import { setNav } from '../../redux/navigation';
 import { setProject } from "../../redux/project";
 import ProjectService from '../../Services/ProjectService';
 import checkIfUserOnProject from '../../Services/UtilityFunctions';
@@ -45,6 +46,10 @@ const ProjectDetails = () => {
                 setProjectL(proj);
                 setUsersL(users);
                 dispatch(setProject(proj));
+                var navRes = await ProjectService.getProjectNav(id);
+                if(navRes){
+                  dispatch(setNav(navRes[0]));
+                }
 
                 //get Sprints for current project
                 var res2 = await ProjectService.getSprints(proj.id);

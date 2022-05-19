@@ -23,7 +23,12 @@ const FeatureService = {
         })
         const data = await res.json()
         return data
-    }
+    },
+    getFeatureNav: async function(id){
+        const res = await fetch(baseURL + `/api/Feature/GetNavToFeature/${id}`)
+        const data = await res.json()
+        return data
+    },
 };
 
 export default FeatureService;

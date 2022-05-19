@@ -2,6 +2,7 @@ import { ButtonGroup, Button, TextField, Typography, Card, CardContent, Tooltip 
 import { useState, useEffect } from "react"
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { setNavDefault } from '../../redux/navigation';
 import { setProjectDefault } from '../../redux/project';
 import ProjectService from '../../Services/ProjectService';
 import Loading from '../Loading/Loading';
@@ -23,6 +24,7 @@ const ProjectSelect = ({userId, onSelect}) => {
         }
         getProjects();
         dispatch(setProjectDefault());
+        dispatch(setNavDefault());
     }, [])
   
     const Default =() => {

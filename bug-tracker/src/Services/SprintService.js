@@ -19,7 +19,12 @@ const SprintService = {
         })
         const data = await res.json()
         return data
-    }
+    },
+    getSprintNav: async function(id){
+        const res = await fetch(baseURL + `/api/Sprint/GetNavToSprint/${id}`)
+        const data = await res.json()
+        return data
+    },
 };
 
 export default SprintService;
